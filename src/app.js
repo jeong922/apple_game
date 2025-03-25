@@ -10,7 +10,11 @@ import StartButton from './start.js';
 // [ ] 170점이 되거나 남은 시간이 0이 되면 최종 점수 출력
 class App {
   constructor() {
-    this.isStart = false;
+    this.state = {
+      isStart: false,
+      numbers: [],
+    };
+
     const app = document.querySelector('.app');
     app.innerHTML = this.template();
     this.render();
@@ -32,7 +36,7 @@ class App {
     const dashboardContainer = document.querySelector('.dashboard-container');
     const boardContainer = document.querySelector('.board-container');
 
-    if (!this.isStart) {
+    if (!this.state.isStart) {
       new StartButton(startContainer, { onStart: this.onStart });
       const dashboard = dashboardContainer.querySelector('.dashboard');
       const board = boardContainer.querySelector('.board');
@@ -45,20 +49,26 @@ class App {
       }
     } else {
       new Dashboard(dashboardContainer, { onReset: this.onReset });
-      new Board(boardContainer);
+      new Board(boardContainer, { numbers: this.state.numbers });
     }
   }
 
   onStart = () => {
     console.log('게임 시작!');
-    this.isStart = true;
+    this.state.isStart = true;
+    this.state.numbers = this.generateNumbers();
     this.render();
   };
 
   onReset = () => {
     console.log('게임 리셋!');
-    this.isStart = false;
+    this.state.isStart = false;
+    this.state.numbers = [];
     this.render();
+  };
+
+  generateNumbers = () => {
+    return Array.from({ length: 10 }, () => Array.from({ length: 17 }, () => Math.floor(Math.random() * 9) + 1));
   };
 }
 

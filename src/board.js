@@ -7,9 +7,14 @@ export default class Board {
   }
 
   template() {
+    const numbers = this.props.numbers;
     return `
-      <section class="board">게임 보드 자리</section>
-		`;
+    <section class="board">
+      ${numbers
+        .map((row) => `<div class="row">${row.map((num) => `<span class="cell">${num}</span>`).join('')}</div>`)
+        .join('')}
+    </section>
+  `;
   }
 
   render() {
