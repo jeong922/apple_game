@@ -20,7 +20,6 @@ export default class Board {
       direction: null,
     };
     this.setEvent();
-    console.log(this.state);
   }
 
   template() {
@@ -31,7 +30,12 @@ export default class Board {
         .map(
           (row, rowIndex) =>
             `<div class="row">${row
-              .map((num, colIndex) => `<span class="cell" data-row="${rowIndex}" data-col="${colIndex}">${num}</span>`)
+              .map(
+                (num, colIndex) =>
+                  `<span class="cell" data-row="${rowIndex}" data-col="${colIndex}">
+                    ${num === 0 ? '0' : num}
+                  </span>`
+              )
               .join('')}</div>`
         )
         .join('')}
@@ -41,6 +45,7 @@ export default class Board {
 
   render() {
     this.target.innerHTML = this.template();
+    this.setEvent();
   }
 
   setEvent() {
@@ -54,6 +59,8 @@ export default class Board {
         const col = Number(cur.dataset.col);
         this.state.startCol = col;
         this.state.startRow = row;
+        const key = `${row}-${col}`;
+        this.state.selected.add(key);
       });
 
       cell.addEventListener('mousemove', (e) => {
@@ -62,8 +69,8 @@ export default class Board {
         }
 
         const cur = e.target;
-        const row = cur.dataset.row;
-        const col = cur.dataset.col;
+        const row = Number(cur.dataset.row);
+        const col = Number(cur.dataset.col);
 
         const dx = col - this.state.startCol;
         const dy = row - this.state.startRow;
@@ -82,8 +89,23 @@ export default class Board {
       });
 
       cell.addEventListener('mouseup', () => {
+        const arr = [...this.state.selected].map((v) => v.split('-'));
+
+        const sum = arr.reduce((acc, [rowStr, colStr]) => {
+          const row = Number(rowStr);
+          const col = Number(colStr);
+          const value = this.props.numbers[row]?.[col] || 0;
+          return acc + value;
+        }, 0);
+
+        if (sum === 10) {
+          arr.forEach(([a, b]) => {
+            this.props.updateBoard(Number(a), Number(b));
+          });
+          this.render();
+        }
+
         this.state.isDragging = false;
-        console.log('mouseup');
         this.state.startRow = null;
         this.state.startCol = null;
         this.state.direction = null;
@@ -95,16 +117,12 @@ export default class Board {
   checkDirection = (dx, dy) => {
     if (!this.state.direction) {
       if (dx > 0) {
-        console.log('오른쪽');
         this.state.direction = 'right';
       } else if (dx < 0) {
-        console.log('왼쪽');
         this.state.direction = 'left';
       } else if (dy > 0) {
-        console.log('아래');
         this.state.direction = 'down';
       } else if (dy < 0) {
-        console.log('위');
         this.state.direction = 'up';
       }
     }

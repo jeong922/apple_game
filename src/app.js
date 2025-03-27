@@ -49,7 +49,7 @@ class App {
       }
     } else {
       new Dashboard(dashboardContainer, { onReset: this.onReset });
-      new Board(boardContainer, { numbers: this.state.numbers });
+      new Board(boardContainer, { numbers: this.state.numbers, updateBoard: this.updateBoard });
     }
   }
 
@@ -69,6 +69,11 @@ class App {
 
   generateNumbers = () => {
     return Array.from({ length: 10 }, () => Array.from({ length: 17 }, () => Math.floor(Math.random() * 9) + 1));
+  };
+
+  updateBoard = (row, col) => {
+    this.state.numbers[row][col] = 0;
+    this.render();
   };
 }
 
