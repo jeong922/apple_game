@@ -24,11 +24,22 @@ export default class Dashboard {
     const button = this.target.querySelector('.reset');
     const dashboard = this.target.querySelector('.dashboard');
     const score = this.target.querySelector('.score');
+    const timer = this.target.querySelector('.timer');
     score.textContent = this.props.score;
+    timer.textContent = this.updateTimer(this.props.time);
+
+    this.updateTimer(this.props.time);
+
     button.addEventListener('click', () => {
       if (this.props.onReset) {
         this.props.onReset();
       }
     });
+  }
+
+  updateTimer(time) {
+    const min = (Math.floor(time / 60) + '').padStart(2, 0);
+    const sec = ((time % 60) + '').padStart(2, 0);
+    return `${min}:${sec}`;
   }
 }
