@@ -23,6 +23,8 @@ export default class Dashboard {
   setEvent() {
     const button = this.target.querySelector('.reset');
     const dashboard = this.target.querySelector('.dashboard');
+    const score = this.target.querySelector('.score');
+    score.textContent = this.props.score;
     button.addEventListener('click', () => {
       if (this.props.onReset) {
         this.props.onReset();

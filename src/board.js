@@ -33,7 +33,7 @@ export default class Board {
               .map(
                 (num, colIndex) =>
                   `<span class="cell" data-row="${rowIndex}" data-col="${colIndex}">
-                    ${num === 0 ? '0' : num}
+                    ${num === 0 ? 0 : num}
                   </span>`
               )
               .join('')}</div>`
@@ -102,6 +102,9 @@ export default class Board {
           arr.forEach(([a, b]) => {
             this.props.updateBoard(Number(a), Number(b));
           });
+
+          const score = arr.filter((v) => v !== 0).length;
+          this.props.updateScore(score);
           this.render();
         }
 

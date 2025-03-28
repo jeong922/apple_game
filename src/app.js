@@ -13,6 +13,7 @@ class App {
     this.state = {
       isStart: false,
       numbers: [],
+      score: 0,
     };
 
     const app = document.querySelector('.app');
@@ -48,8 +49,12 @@ class App {
         board.remove();
       }
     } else {
-      new Dashboard(dashboardContainer, { onReset: this.onReset });
-      new Board(boardContainer, { numbers: this.state.numbers, updateBoard: this.updateBoard });
+      new Dashboard(dashboardContainer, { onReset: this.onReset, score: this.state.score });
+      new Board(boardContainer, {
+        numbers: this.state.numbers,
+        updateBoard: this.updateBoard,
+        updateScore: this.updateScore,
+      });
     }
   }
 
@@ -64,6 +69,7 @@ class App {
     console.log('게임 리셋!');
     this.state.isStart = false;
     this.state.numbers = [];
+    this.state.score = 0;
     this.render();
   };
 
@@ -73,6 +79,11 @@ class App {
 
   updateBoard = (row, col) => {
     this.state.numbers[row][col] = 0;
+    this.render();
+  };
+
+  updateScore = (n) => {
+    this.state.score += n;
     this.render();
   };
 }
