@@ -32,9 +32,9 @@ export default class Board {
             `<div class="row">${row
               .map(
                 (num, colIndex) =>
-                  `<span class="cell" data-row="${rowIndex}" data-col="${colIndex}">
+                  `<div class="cell" data-row="${rowIndex}" data-col="${colIndex}">
                     ${num === 0 ? 0 : num}
-                  </span>`
+                  </div>`
               )
               .join('')}</div>`
         )
@@ -49,84 +49,90 @@ export default class Board {
   }
 
   setEvent() {
-    const cells = this.target.querySelectorAll('.cell');
+    const board = this.target.querySelector('.board');
 
-    cells.forEach((cell) => {
-      cell.addEventListener('mousedown', (e) => {
-        this.state.isDragging = true;
-        const cur = e.target;
-        const row = Number(cur.dataset.row);
-        const col = Number(cur.dataset.col);
-        this.state.startCol = col;
-        this.state.startRow = row;
-        const key = `${row}-${col}`;
-        this.state.selected.add(key);
-      });
+    board.addEventListener('mousedown', (e) => {
+      if (!e.target.classList.contains('cell')) {
+        return;
+      }
 
-      cell.addEventListener('mousemove', (e) => {
-        if (!this.state.isDragging) {
-          return;
-        }
-
-        const cur = e.target;
-        const row = Number(cur.dataset.row);
-        const col = Number(cur.dataset.col);
-
-        const dx = col - this.state.startCol;
-        const dy = row - this.state.startRow;
-
-        this.checkDirection(dx, dy);
-
-        if (
-          (this.state.direction === 'right' && dy === 0 && dx > 0) ||
-          (this.state.direction === 'left' && dy === 0 && dx < 0) ||
-          (this.state.direction === 'down' && dx === 0 && dy > 0) ||
-          (this.state.direction === 'up' && dx === 0 && dy < 0)
-        ) {
-          const key = `${row}-${col}`;
-          this.state.selected.add(key);
-        }
-      });
-
-      cell.addEventListener('mouseup', () => {
-        const arr = [...this.state.selected].map((v) => v.split('-'));
-
-        const sum = arr.reduce((acc, [rowStr, colStr]) => {
-          const row = Number(rowStr);
-          const col = Number(colStr);
-          const value = this.props.numbers[row]?.[col] || 0;
-          return acc + value;
-        }, 0);
-
-        if (sum === 10) {
-          arr.forEach(([a, b]) => {
-            this.props.updateBoard(Number(a), Number(b));
-          });
-
-          const score = arr.filter((v) => v !== 0).length;
-          this.props.updateScore(score);
-          this.render();
-        }
-
-        this.state.isDragging = false;
-        this.state.startRow = null;
-        this.state.startCol = null;
-        this.state.direction = null;
-        this.state.selected = new Set();
-      });
+      this.state.isDragging = true;
+      const cur = e.target;
+      const row = Number(cur.dataset.row);
+      const col = Number(cur.dataset.col);
+      this.state.startCol = col;
+      this.state.startRow = row;
+      this.state.selected.add(`${row}-${col}`);
     });
+
+    board.addEventListener('mousemove', (e) => {
+      if (!this.state.isDragging) {
+        return;
+      }
+
+      if (!e.target.classList.contains('cell')) {
+        return;
+      }
+
+      const cur = e.target;
+      const row = Number(cur.dataset.row);
+      const col = Number(cur.dataset.col);
+
+      const dx = col - this.state.startCol;
+      const dy = row - this.state.startRow;
+
+      this.checkDirection(dx, dy);
+
+      if (
+        (this.state.direction === 'right' && dy === 0 && dx > 0) ||
+        (this.state.direction === 'left' && dy === 0 && dx < 0) ||
+        (this.state.direction === 'down' && dx === 0 && dy > 0) ||
+        (this.state.direction === 'up' && dx === 0 && dy < 0)
+      ) {
+        this.state.selected.add(`${row}-${col}`);
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!this.state.isDragging) return;
+
+      const arr = [...this.state.selected].map((v) => v.split('-'));
+
+      const sum = arr.reduce((acc, [rowStr, colStr]) => {
+        const row = Number(rowStr);
+        const col = Number(colStr);
+        const value = this.props.numbers[row]?.[col] || 0;
+        return acc + value;
+      }, 0);
+
+      if (sum === 10) {
+        arr.forEach(([row, col]) => {
+          this.props.updateBoard(Number(row), Number(col));
+        });
+
+        const score = arr.length;
+        this.props.updateScore(score);
+        this.render();
+      }
+
+      this.resetState();
+    });
+  }
+
+  resetState() {
+    this.state.isDragging = false;
+    this.state.startRow = null;
+    this.state.startCol = null;
+    this.state.direction = null;
+    this.state.selected.clear();
   }
 
   checkDirection = (dx, dy) => {
     if (!this.state.direction) {
-      if (dx > 0) {
-        this.state.direction = 'right';
-      } else if (dx < 0) {
-        this.state.direction = 'left';
-      } else if (dy > 0) {
-        this.state.direction = 'down';
-      } else if (dy < 0) {
-        this.state.direction = 'up';
+      if (Math.abs(dx) > Math.abs(dy)) {
+        this.state.direction = dx > 0 ? 'right' : 'left';
+      } else if (Math.abs(dy) > Math.abs(dx)) {
+        this.state.direction = dy > 0 ? 'down' : 'up';
       }
     }
   };
