@@ -82,8 +82,17 @@ class App {
     this.render();
   };
 
+  // generateNumbers = () => {
+  //   return Array.from({ length: 10 }, () => Array.from({ length: 17 }, () => Math.floor(Math.random() * 9) + 1));
+  // };
+
   generateNumbers = () => {
-    return Array.from({ length: 10 }, () => Array.from({ length: 17 }, () => Math.floor(Math.random() * 9) + 1));
+    return Array.from({ length: 10 }, () =>
+      Array.from({ length: 17 }, () => {
+        const rand = Math.random();
+        return rand < 0.7 ? Math.floor(Math.random() * 4) + 1 : Math.floor(Math.random() * 5) + 5;
+      })
+    );
   };
 
   updateBoard = (row, col) => {
