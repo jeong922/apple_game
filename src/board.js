@@ -1,24 +1,16 @@
-// 게임보드 구현
-
-// 드래그로 숫자 선택
-// -> 대각선으로 선택 안되고 오직 시작 지점으로 부터 오른쪽 왼쪽 위 아래 중 한방향으로만
-// -> 시작 지점의 좌표와 움직인 방향을 저장해서 좌표값 확인?
-// -> 보드 밖으로 나가면 이벤트 취소
-// 선택된 숫자의 수와 선택된 숫자들의 합이 10인지 확인
-// 선택된 숫자의 합이 10이면 숫자 삭제
-// 선택된 숫자의 합이 10이 아니면 이벤트 취소
 export default class Board {
   constructor(target, props) {
     this.target = target;
     this.props = props;
-    this.render();
     this.state = {
       isDragging: false,
       startCol: null,
       startRow: null,
+      endCol: null,
+      endRow: null,
       selected: new Set(),
-      direction: null,
     };
+    this.render();
     this.setEvent();
   }
 
@@ -33,7 +25,7 @@ export default class Board {
               .map(
                 (num, colIndex) =>
                   `<div class="cell" data-row="${rowIndex}" data-col="${colIndex}">
-                    ${num === 0 ? 0 : num}
+                    ${num === 0 ? '' : num}
                   </div>`
               )
               .join('')}</div>`
@@ -49,9 +41,7 @@ export default class Board {
   }
 
   setEvent() {
-    const board = this.target.querySelector('.board');
-
-    board.addEventListener('mousedown', (e) => {
+    document.addEventListener('mousedown', (e) => {
       if (!e.target.classList.contains('cell')) {
         return;
       }
@@ -62,10 +52,12 @@ export default class Board {
       const col = Number(cur.dataset.col);
       this.state.startCol = col;
       this.state.startRow = row;
-      this.state.selected.add(`${row}-${col}`);
+      this.state.endCol = col;
+      this.state.endRow = row;
+      this.selectCells();
     });
 
-    board.addEventListener('mousemove', (e) => {
+    document.addEventListener('mousemove', (e) => {
       if (!this.state.isDragging) {
         return;
       }
@@ -75,47 +67,69 @@ export default class Board {
       }
 
       const cur = e.target;
-      const row = Number(cur.dataset.row);
-      const col = Number(cur.dataset.col);
-
-      const dx = col - this.state.startCol;
-      const dy = row - this.state.startRow;
-
-      this.checkDirection(dx, dy);
-
-      if (
-        (this.state.direction === 'right' && dy === 0 && dx > 0) ||
-        (this.state.direction === 'left' && dy === 0 && dx < 0) ||
-        (this.state.direction === 'down' && dx === 0 && dy > 0) ||
-        (this.state.direction === 'up' && dx === 0 && dy < 0)
-      ) {
-        this.state.selected.add(`${row}-${col}`);
-      }
+      this.state.endRow = Number(cur.dataset.row);
+      this.state.endCol = Number(cur.dataset.col);
+      this.selectCells();
     });
 
     document.addEventListener('mouseup', () => {
-      if (!this.state.isDragging) return;
+      if (!this.state.isDragging) {
+        return;
+      }
 
       const arr = [...this.state.selected].map((v) => v.split('-'));
 
-      const sum = arr.reduce((acc, [rowStr, colStr]) => {
-        const row = Number(rowStr);
-        const col = Number(colStr);
-        const value = this.props.numbers[row]?.[col] || 0;
+      const sum = arr.reduce((acc, [row, col]) => {
+        const value = this.props.numbers[+row][+col];
         return acc + value;
       }, 0);
 
       if (sum === 10) {
+        const score = arr.filter(([row, col]) => this.props.numbers[+row][+col]).length;
         arr.forEach(([row, col]) => {
           this.props.updateBoard(Number(row), Number(col));
         });
 
-        const score = arr.length;
         this.props.updateScore(score);
         this.render();
       }
 
+      this.resetSelection();
       this.resetState();
+    });
+  }
+
+  selectCells() {
+    this.state.selected.clear();
+    const minRow = Math.min(this.state.startRow, this.state.endRow);
+    const maxRow = Math.max(this.state.startRow, this.state.endRow);
+    const minCol = Math.min(this.state.startCol, this.state.endCol);
+    const maxCol = Math.max(this.state.startCol, this.state.endCol);
+
+    for (let row = minRow; row <= maxRow; row++) {
+      for (let col = minCol; col <= maxCol; col++) {
+        this.state.selected.add(`${row}-${col}`);
+      }
+    }
+
+    document.querySelectorAll('.cell').forEach((cell) => {
+      const row = cell.dataset.row;
+      const col = cell.dataset.col;
+      if (this.state.selected.has(`${row}-${col}`)) {
+        cell.classList.add('selected');
+      } else {
+        cell.classList.remove('selected');
+      }
+    });
+  }
+
+  resetSelection() {
+    this.state.selected.forEach((value) => {
+      const [row, col] = value.split('-');
+      const cell = this.target.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+      if (cell) {
+        cell.classList.remove('selected');
+      }
     });
   }
 
@@ -126,14 +140,4 @@ export default class Board {
     this.state.direction = null;
     this.state.selected.clear();
   }
-
-  checkDirection = (dx, dy) => {
-    if (!this.state.direction) {
-      if (Math.abs(dx) > Math.abs(dy)) {
-        this.state.direction = dx > 0 ? 'right' : 'left';
-      } else if (Math.abs(dy) > Math.abs(dx)) {
-        this.state.direction = dy > 0 ? 'down' : 'up';
-      }
-    }
-  };
 }

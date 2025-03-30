@@ -1,0 +1,45 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.game {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  padding: 10px;
+  background-color: aqua;
+  border-radius: 5px;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: antiquewhite;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.cell.selected {
+  background-color: lightblue;
+}
+
+.cell:last-child {
+  margin-right: 0px;
+}

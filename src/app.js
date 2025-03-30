@@ -18,9 +18,7 @@ class App {
       score: 0,
       time: TIME,
     };
-
     this.interval = null;
-
     const app = document.querySelector('.app');
     app.innerHTML = this.template();
     this.render();
@@ -73,12 +71,15 @@ class App {
 
   onReset = () => {
     console.log('게임 리셋!');
-    this.state.isStart = false;
-    this.state.numbers = [];
-    this.state.score = 0;
+    this.state = {
+      isStart: false,
+      numbers: [],
+      score: 0,
+      time: TIME,
+    };
+
     clearInterval(this.interval);
     this.interval = null;
-    this.state.time = TIME;
     this.render();
   };
 
