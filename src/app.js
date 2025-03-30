@@ -97,11 +97,13 @@ class App {
   };
 
   updateBoard = (row, col) => {
+    console.log('보드 업데이트:', row, col);
     this.state.numbers[row][col] = 0;
     this.render();
   };
 
   updateScore = (n) => {
+    console.log('점수 업데이트:', n);
     this.state.score += n;
     this.render();
   };

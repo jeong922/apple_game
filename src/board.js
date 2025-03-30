@@ -41,63 +41,68 @@ export default class Board {
   }
 
   setEvent() {
-    document.addEventListener('mousedown', (e) => {
-      if (!e.target.classList.contains('cell')) {
-        return;
-      }
-
-      this.state.isDragging = true;
-      const cur = e.target;
-      const row = Number(cur.dataset.row);
-      const col = Number(cur.dataset.col);
-      this.state.startCol = col;
-      this.state.startRow = row;
-      this.state.endCol = col;
-      this.state.endRow = row;
-      this.selectCells();
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if (!this.state.isDragging) {
-        return;
-      }
-
-      if (!e.target.classList.contains('cell')) {
-        return;
-      }
-
-      const cur = e.target;
-      this.state.endRow = Number(cur.dataset.row);
-      this.state.endCol = Number(cur.dataset.col);
-      this.selectCells();
-    });
-
-    document.addEventListener('mouseup', () => {
-      if (!this.state.isDragging) {
-        return;
-      }
-
-      const arr = [...this.state.selected].map((v) => v.split('-'));
-
-      const sum = arr.reduce((acc, [row, col]) => {
-        const value = this.props.numbers[+row][+col];
-        return acc + value;
-      }, 0);
-
-      if (sum === 10) {
-        const score = arr.filter(([row, col]) => this.props.numbers[+row][+col]).length;
-        arr.forEach(([row, col]) => {
-          this.props.updateBoard(Number(row), Number(col));
-        });
-
-        this.props.updateScore(score);
-        this.render();
-      }
-
-      this.resetSelection();
-      this.resetState();
-    });
+    document.addEventListener('mousedown', this.handleMouseDown);
+    document.addEventListener('mousemove', this.handleMouseMove);
+    document.addEventListener('mouseup', this.handleMouseUp);
   }
+
+  handleMouseDown = (e) => {
+    if (!e.target.classList.contains('cell')) {
+      return;
+    }
+
+    this.state.isDragging = true;
+    const cur = e.target;
+    const row = Number(cur.dataset.row);
+    const col = Number(cur.dataset.col);
+    this.state.startCol = col;
+    this.state.startRow = row;
+    this.state.endCol = col;
+    this.state.endRow = row;
+    this.selectCells();
+  };
+
+  handleMouseMove = (e) => {
+    if (!this.state.isDragging) {
+      return;
+    }
+
+    if (!e.target.classList.contains('cell')) {
+      return;
+    }
+
+    const cur = e.target;
+    this.state.endRow = Number(cur.dataset.row);
+    this.state.endCol = Number(cur.dataset.col);
+    this.selectCells();
+  };
+
+  handleMouseUp = () => {
+    if (!this.state.isDragging) {
+      return;
+    }
+
+    const arr = [...this.state.selected].map((v) => v.split('-'));
+    const filtered = arr.filter(([row, col]) => this.props.numbers[+row][+col] > 0);
+
+    const sum = filtered.reduce((acc, [row, col]) => {
+      const value = this.props.numbers[+row][+col];
+      return acc + value;
+    }, 0);
+
+    if (sum === 10) {
+      const score = filtered.length;
+      filtered.forEach(([row, col]) => {
+        this.props.updateBoard(+row, +col);
+      });
+
+      this.props.updateScore(score);
+      this.render();
+    }
+
+    this.resetSelection();
+    this.resetState();
+  };
 
   selectCells() {
     this.state.selected.clear();
