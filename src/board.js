@@ -31,6 +31,9 @@ export default class Board {
               .join('')}</div>`
         )
         .join('')}
+      <div>
+        <button type="button" class="reset">재시작</button>
+      </div>
     </section>
   `;
   }
@@ -44,6 +47,8 @@ export default class Board {
     document.addEventListener('mousedown', this.handleMouseDown);
     document.addEventListener('mousemove', this.handleMouseMove);
     document.addEventListener('mouseup', this.handleMouseUp);
+    const button = this.target.querySelector('.reset');
+    button.addEventListener('click', this.handleGameReset);
   }
 
   handleMouseDown = (e) => {
@@ -102,6 +107,10 @@ export default class Board {
 
     this.resetSelection();
     this.resetState();
+  };
+
+  handleGameReset = () => {
+    this.props.onReset();
   };
 
   selectCells() {

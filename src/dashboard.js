@@ -11,7 +11,6 @@ export default class Dashboard {
       <section class="dashboard">
         <div class="timer">00:00</div>
         <div class="score">0</div>
-        <button type="button" class="reset">reset</button>
       </section>
     `;
   }
@@ -21,20 +20,13 @@ export default class Dashboard {
   }
 
   setEvent() {
-    const button = this.target.querySelector('.reset');
-    const dashboard = this.target.querySelector('.dashboard');
     const score = this.target.querySelector('.score');
     const timer = this.target.querySelector('.timer');
+    const scoreText = document.createElement('span');
+    scoreText.textContent = '점';
     score.textContent = this.props.score;
+    score.append(scoreText);
     timer.textContent = this.updateTimer(this.props.time);
-
-    this.updateTimer(this.props.time);
-
-    button.addEventListener('click', () => {
-      if (this.props.onReset) {
-        this.props.onReset();
-      }
-    });
   }
 
   updateTimer(time) {

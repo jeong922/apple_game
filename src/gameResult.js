@@ -9,11 +9,12 @@ export default class GameResult {
   template() {
     return `
       <section class="result">
-        <div>
-          <span>점수</span>
-          <span class="result_score">0</span>
+        <div class="score-container">
+          <span>최종점수:</span>
+          <span class="total-score">0</span>
+          <span>점</span>
+				</div>
 					<button class="restart">다시하기</button>
-        </div>
       </section>
     `;
   }
@@ -27,13 +28,13 @@ export default class GameResult {
     const result = this.target.querySelector('.result');
 
     button.addEventListener('click', () => {
-      this.props.onReset(); // 게임 리셋
+      this.props.onReset();
       result.remove();
     });
   }
 
   updateGameResult() {
-    const score = this.target.querySelector('.result_score');
+    const score = this.target.querySelector('.total-score');
     score.textContent = this.props.score;
   }
 }
