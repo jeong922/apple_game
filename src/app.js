@@ -2,6 +2,7 @@
 
 import Board from './board.js';
 import Dashboard from './dashboard.js';
+import GameResult from './gameResult.js';
 import StartButton from './start.js';
 
 // TODO:
@@ -9,7 +10,7 @@ import StartButton from './start.js';
 // [ ] 시작 버튼을 누르면 타이머 동작하게 만들기기
 // [ ] 170점이 되거나 남은 시간이 0이 되면 최종 점수 출력
 
-const TIME = 120;
+const TIME = 10;
 class App {
   constructor() {
     this.state = {
@@ -31,6 +32,7 @@ class App {
         <section class="start-container"></section>
         <section class="dashboard-container"></section>
         <section class="board-container"></section>
+        <section class="result-container"></section>
       </main>
     `;
   }
@@ -83,10 +85,6 @@ class App {
     this.render();
   };
 
-  // generateNumbers = () => {
-  //   return Array.from({ length: 10 }, () => Array.from({ length: 17 }, () => Math.floor(Math.random() * 9) + 1));
-  // };
-
   generateNumbers = () => {
     return Array.from({ length: 10 }, () =>
       Array.from({ length: 17 }, () => {
@@ -108,6 +106,17 @@ class App {
     this.render();
   };
 
+  gameOver() {
+    const resultContainer = document.querySelector('.result-container');
+    const gameResult = new GameResult(resultContainer, {
+      score: this.state.score,
+      onReset: this.onReset,
+      onStart: this.onStart,
+    });
+    gameResult.updateGameResult(this.state.score);
+    this.state.isStart = false;
+  }
+
   startTimer = () => {
     clearInterval(this.interval);
     this.interval = setInterval(() => {
@@ -117,7 +126,7 @@ class App {
       } else {
         clearInterval(this.interval);
         console.log('게임 오버~~~ 점수를 화면에 보여주기');
-        // 모달창으로 점수를 보여주기
+        this.gameOver();
       }
     }, 1000);
   };
