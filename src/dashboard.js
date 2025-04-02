@@ -26,12 +26,9 @@ export default class Dashboard {
     scoreText.textContent = '점';
     score.textContent = this.props.score;
     score.append(scoreText);
-    timer.textContent = this.updateTimer(this.props.time);
-  }
-
-  updateTimer(time) {
-    const min = (Math.floor(time / 60) + '').padStart(2, 0);
-    const sec = ((time % 60) + '').padStart(2, 0);
-    return `${min}:${sec}`;
+    timer.textContent = `${(Math.floor(this.props.time / 60) + '').padStart(2, 0)}:${(
+      (this.props.time % 60) +
+      ''
+    ).padStart(2, 0)}`;
   }
 }

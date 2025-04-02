@@ -5,21 +5,17 @@ import Dashboard from './dashboard.js';
 import GameResult from './gameResult.js';
 import StartButton from './start.js';
 
-// TODO:
-// 드래그 할때 버그 수정 필요(가끔 숫자 선택시 올바르게 동작하지 않음)
-
 const TIME = 120;
 class App {
-  constructor() {
+  constructor(target) {
     this.state = {
       isStart: false,
       numbers: [],
       score: 0,
       time: TIME,
     };
+    this.target = target;
     this.interval = null;
-    const app = document.querySelector('.app');
-    app.innerHTML = this.template();
     this.render();
   }
 
@@ -35,7 +31,7 @@ class App {
     `;
   }
 
-  render() {
+  mounted() {
     const startContainer = document.querySelector('.start-container');
     const dashboardContainer = document.querySelector('.dashboard-container');
     const boardContainer = document.querySelector('.board-container');
@@ -55,15 +51,18 @@ class App {
       new Dashboard(dashboardContainer, { score: this.state.score, time: this.state.time });
       new Board(boardContainer, {
         numbers: this.state.numbers,
-        updateBoard: this.updateBoard,
-        updateScore: this.updateScore,
+        updateGame: this.updateGame,
         onReset: this.onReset,
       });
     }
   }
 
+  render() {
+    this.target.innerHTML = this.template();
+    this.mounted();
+  }
+
   onStart = () => {
-    console.log('게임 시작!');
     this.state.isStart = true;
     this.state.numbers = this.generateNumbers();
     this.startTimer();
@@ -71,7 +70,6 @@ class App {
   };
 
   onReset = () => {
-    console.log('게임 리셋!');
     this.state = {
       isStart: false,
       numbers: [],
@@ -96,16 +94,23 @@ class App {
     );
   };
 
-  updateBoard = (row, col) => {
-    console.log('보드 업데이트:', row, col);
-    this.state.numbers[row][col] = 0;
-    this.render();
-  };
+  updateGame = (arr) => {
+    const newNumbers = this.state.numbers.map((rowArr) => [...rowArr]);
+    let totalScore = 0;
 
-  updateScore = (n) => {
-    console.log('점수 업데이트:', n);
-    this.state.score += n;
-    this.render();
+    arr.forEach(([row, col]) => {
+      if (newNumbers[+row][+col] > 0) {
+        newNumbers[+row][+col] = 0;
+        totalScore++;
+      }
+    });
+
+    if (this.state.score + totalScore !== this.state.score) {
+      this.setState({
+        numbers: newNumbers,
+        score: this.state.score + totalScore,
+      });
+    }
   };
 
   gameOver() {
@@ -121,18 +126,34 @@ class App {
     resultContainer.classList.add('visible');
   }
 
+  renderTime = () => {
+    const timer = document.querySelector('.timer');
+    timer.textContent = this.updateTimer(this.state.time);
+  };
+
   startTimer = () => {
     clearInterval(this.interval);
     this.interval = setInterval(() => {
       if (this.state.time > 0) {
         this.state.time -= 1;
-        this.render();
+        this.renderTime();
       } else {
         clearInterval(this.interval);
         this.gameOver();
       }
     }, 1000);
   };
+
+  updateTimer(time) {
+    const min = (Math.floor(time / 60) + '').padStart(2, 0);
+    const sec = ((time % 60) + '').padStart(2, 0);
+    return `${min}:${sec}`;
+  }
+
+  setState(newState) {
+    this.state = { ...this.state, ...newState };
+    this.render();
+  }
 }
 
-new App();
+new App(document.querySelector('.app'));

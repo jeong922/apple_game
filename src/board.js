@@ -15,10 +15,9 @@ export default class Board {
   }
 
   template() {
-    const numbers = this.props.numbers;
     return `
     <section class="board">
-      ${numbers
+      ${this.props.numbers
         .map(
           (row, rowIndex) =>
             `<div class="row">${row
@@ -38,15 +37,17 @@ export default class Board {
   `;
   }
 
+  mounted() {}
+
   render() {
     this.target.innerHTML = this.template();
-    this.setEvent();
+    this.mounted();
   }
 
   setEvent() {
-    document.addEventListener('mousedown', this.handleMouseDown);
-    document.addEventListener('mousemove', this.handleMouseMove);
-    document.addEventListener('mouseup', this.handleMouseUp);
+    this.target.addEventListener('mousedown', this.handleMouseDown);
+    this.target.addEventListener('mousemove', this.handleMouseMove);
+    this.target.addEventListener('mouseup', this.handleMouseUp);
     const button = this.target.querySelector('.reset');
     button.addEventListener('click', this.handleGameReset);
   }
@@ -96,13 +97,7 @@ export default class Board {
     }, 0);
 
     if (sum === 10) {
-      const score = filtered.length;
-      filtered.forEach(([row, col]) => {
-        this.props.updateBoard(+row, +col);
-      });
-
-      this.props.updateScore(score);
-      this.render();
+      this.props.updateGame(filtered);
     }
 
     this.resetSelection();
