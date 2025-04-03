@@ -83,8 +83,8 @@ class App {
   };
 
   generateNumbers = () => {
-    return Array.from({ length: 5 }, () =>
-      Array.from({ length: 5 }, () => {
+    return Array.from({ length: 10 }, () =>
+      Array.from({ length: 17 }, () => {
         const rand = Math.random();
         return rand < 0.7 ? Math.floor(Math.random() * 4) + 1 : Math.floor(Math.random() * 5) + 5;
       })
