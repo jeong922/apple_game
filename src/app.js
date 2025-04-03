@@ -4,6 +4,7 @@ import Board from './board.js';
 import Dashboard from './dashboard.js';
 import GameResult from './gameResult.js';
 import StartButton from './start.js';
+import { hasSumPathToTen } from './utils/boardUtils.js';
 
 const TIME = 120;
 class App {
@@ -110,6 +111,12 @@ class App {
         numbers: newNumbers,
         score: this.state.score + totalScore,
       });
+    }
+
+    if (!hasSumPathToTen(newNumbers)) {
+      setTimeout(() => {
+        this.setState({ numbers: this.generateNumbers() });
+      }, 100);
     }
   };
 
