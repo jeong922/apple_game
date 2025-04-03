@@ -2,7 +2,13 @@ export default class Board {
   constructor(target, props) {
     this.target = target;
     this.props = props;
-    this.state = {
+    this.state = this.init();
+    this.render();
+    this.setEvent();
+  }
+
+  init() {
+    return {
       isDragging: false,
       startCol: null,
       startRow: null,
@@ -10,8 +16,6 @@ export default class Board {
       endRow: null,
       selected: new Set(),
     };
-    this.render();
-    this.setEvent();
   }
 
   template() {
@@ -24,7 +28,17 @@ export default class Board {
               .map(
                 (num, colIndex) =>
                   `<div class="cell" data-row="${rowIndex}" data-col="${colIndex}">
-                    ${num === 0 ? '' : num}
+                    ${
+                      num
+                        ? `
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                        <path d="M224 112c-8.8 0-16-7.2-16-16V80c0-44.2 35.8-80 80-80h16c8.8 0 16 7.2 16 16v16c0 44.2-35.8 80-80 80h-16z" fill="#B5E48C"/>
+                        <path d="M0 288c0-76.3 35.7-160 112-160c27.3 0 59.7 10.3 82.7 19.3c18.8 7.3 39.9 7.3 58.7 0c22.9-8.9 55.4-19.3 82.7-19.3c76.3 0 112 83.7 112 160c0 128-80 224-160 224c-16.5 0-38.1-6.6-51.5-11.3c-8.1-2.8-16.9-2.8-25 0c-13.4 4.7-35 11.3-51.5 11.3C80 512 0 416 0 288z" fill="#FF6B6B"/>
+                      </svg>
+                    `
+                        : ''
+                    }
+                    <span>${num === 0 ? '' : num}</span>
                   </div>`
               )
               .join('')}</div>`
@@ -46,26 +60,33 @@ export default class Board {
 
   setEvent() {
     this.target.addEventListener('mousedown', this.handleMouseDown);
-    this.target.addEventListener('mousemove', this.handleMouseMove);
     this.target.addEventListener('mouseup', this.handleMouseUp);
-    const button = this.target.querySelector('.reset');
-    button.addEventListener('click', this.handleGameReset);
+    this.target.addEventListener('click', this.handleResetClick);
   }
 
+  handleResetClick = (e) => {
+    if (e.target.closest('.reset')) {
+      this.handleGameReset();
+    }
+  };
+
   handleMouseDown = (e) => {
-    if (!e.target.classList.contains('cell')) {
+    const cell = e.target.closest('.cell');
+
+    if (!cell) {
       return;
     }
 
     this.state.isDragging = true;
-    const cur = e.target;
-    const row = Number(cur.dataset.row);
-    const col = Number(cur.dataset.col);
+    const row = Number(cell.dataset.row);
+    const col = Number(cell.dataset.col);
     this.state.startCol = col;
     this.state.startRow = row;
     this.state.endCol = col;
     this.state.endRow = row;
     this.selectCells();
+
+    this.target.addEventListener('mousemove', this.handleMouseMove);
   };
 
   handleMouseMove = (e) => {
@@ -73,13 +94,14 @@ export default class Board {
       return;
     }
 
-    if (!e.target.classList.contains('cell')) {
+    const cell = e.target.closest('.cell');
+
+    if (!cell) {
       return;
     }
 
-    const cur = e.target;
-    this.state.endRow = Number(cur.dataset.row);
-    this.state.endCol = Number(cur.dataset.col);
+    this.state.endRow = Number(cell.dataset.row);
+    this.state.endCol = Number(cell.dataset.col);
     this.selectCells();
   };
 
@@ -102,9 +124,12 @@ export default class Board {
 
     this.resetSelection();
     this.resetState();
+
+    this.target.removeEventListener('mousemove', this.handleMouseMove);
   };
 
   handleGameReset = () => {
+    this.resetState();
     this.props.onReset();
   };
 
@@ -143,10 +168,6 @@ export default class Board {
   }
 
   resetState() {
-    this.state.isDragging = false;
-    this.state.startRow = null;
-    this.state.startCol = null;
-    this.state.direction = null;
-    this.state.selected.clear();
+    this.state = this.init();
   }
 }

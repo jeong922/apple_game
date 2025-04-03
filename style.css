@@ -123,13 +123,24 @@ button {
 }
 
 .cell {
-  width: 36px;
-  height: 36px;
+  position: relative;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: antiquewhite;
-  border: 1px solid var(--apple-red);
+}
+
+.cell svg {
+  width: 32px;
+  height: 32px;
+  position: absolute;
+}
+
+.cell span {
+  position: absolute;
+  top: 12px;
+  color: white;
 }
 
 .cell.selected {

@@ -9,15 +9,19 @@ import { hasSumPathToTen } from './utils/boardUtils.js';
 const TIME = 120;
 class App {
   constructor(target) {
-    this.state = {
+    this.target = target;
+    this.state = this.init();
+    this.render();
+  }
+
+  init() {
+    return {
       isStart: false,
       numbers: [],
       score: 0,
       time: TIME,
+      interval: null,
     };
-    this.target = target;
-    this.interval = null;
-    this.render();
   }
 
   template() {
@@ -71,24 +75,16 @@ class App {
   };
 
   onReset = () => {
-    this.state = {
-      isStart: false,
-      numbers: [],
-      score: 0,
-      time: TIME,
-    };
-
-    clearInterval(this.interval);
-    this.interval = null;
+    clearInterval(this.state.interval);
+    this.state = this.init();
     this.render();
-
     const resultContainer = document.querySelector('.result-container');
     resultContainer.classList.remove('visible');
   };
 
   generateNumbers = () => {
-    return Array.from({ length: 10 }, () =>
-      Array.from({ length: 17 }, () => {
+    return Array.from({ length: 5 }, () =>
+      Array.from({ length: 5 }, () => {
         const rand = Math.random();
         return rand < 0.7 ? Math.floor(Math.random() * 4) + 1 : Math.floor(Math.random() * 5) + 5;
       })
@@ -139,13 +135,13 @@ class App {
   };
 
   startTimer = () => {
-    clearInterval(this.interval);
-    this.interval = setInterval(() => {
+    clearInterval(this.state.interval);
+    this.state.interval = setInterval(() => {
       if (this.state.time > 0) {
         this.state.time -= 1;
         this.renderTime();
       } else {
-        clearInterval(this.interval);
+        clearInterval(this.state.interval);
         this.gameOver();
       }
     }, 1000);
