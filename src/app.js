@@ -26,8 +26,8 @@ class App {
 
   template() {
     return `
-      <h1 class="title">사과 게임</h1>
       <main class="game">
+            <h1 class="title">사과 게임</h1>
         <section class="start-container"></section>
         <section class="dashboard-container"></section>
         <section class="board-container"></section>
