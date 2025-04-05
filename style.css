@@ -90,11 +90,12 @@ button:hover {
   margin: 20px 0;
 }
 
-.timer,
-.score {
-  width: 100px;
-  height: 60px;
+.timer-wrapper,
+.score-wrapper {
+  width: 120px;
+  height: 80px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
@@ -102,6 +103,11 @@ button:hover {
   background-color: var(--bg-white);
   font-size: var(--font-size-lg);
   color: var(--text-blue);
+}
+
+.timer,
+.score {
+  color: var(--text-color);
 }
 
 .board {

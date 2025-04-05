@@ -9,8 +9,14 @@ export default class Dashboard {
   template() {
     return `
       <section class="dashboard">
-        <div class="timer">00:00</div>
-        <div class="score">0</div>
+        <div class="timer-wrapper">
+          <span class="name">남은 시간</span>
+          <span class="timer">00:00</span>
+        </div>
+        <div class="score-wrapper">
+          <span class="name">점수</span>
+          <span class="score">0</span>
+        </div>
       </section>
     `;
   }
@@ -23,7 +29,7 @@ export default class Dashboard {
     const score = this.target.querySelector('.score');
     const timer = this.target.querySelector('.timer');
     const scoreText = document.createElement('span');
-    scoreText.textContent = '점';
+    // scoreText.textContent = '점';
     score.textContent = this.props.score;
     score.append(scoreText);
     timer.textContent = `${(Math.floor(this.props.time / 60) + '').padStart(2, 0)}:${(
