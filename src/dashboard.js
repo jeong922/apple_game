@@ -29,7 +29,6 @@ export default class Dashboard {
     const score = this.target.querySelector('.score');
     const timer = this.target.querySelector('.timer');
     const scoreText = document.createElement('span');
-    // scoreText.textContent = '점';
     score.textContent = this.props.score;
     score.append(scoreText);
     timer.textContent = `${(Math.floor(this.props.time / 60) + '').padStart(2, 0)}:${(

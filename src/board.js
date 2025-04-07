@@ -118,12 +118,7 @@ export default class Board {
       return acc + value;
     }, 0);
 
-    // if (sum === 10) {
-    //   this.props.updateGame(filtered);
-    // }
-
     if (sum === 10) {
-      // ✨ 애니메이션 먼저 적용
       filtered.forEach(([row, col]) => {
         const cell = this.target.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
         if (cell) {
@@ -131,7 +126,6 @@ export default class Board {
         }
       });
 
-      // 0.4초 후 숫자 삭제
       setTimeout(() => {
         this.props.updateGame(filtered);
       }, 400);
