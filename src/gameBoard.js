@@ -1,4 +1,4 @@
-export default class Board {
+export default class GameBoard {
   constructor(target, props) {
     this.target = target;
     this.props = props;
