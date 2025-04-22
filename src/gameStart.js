@@ -1,4 +1,4 @@
-export default class StartButton {
+export default class GameStart {
   constructor(target, props) {
     this.target = target;
     this.props = props;
@@ -24,13 +24,15 @@ export default class StartButton {
   }
 
   setEvent() {
-    const info = this.target.querySelector('.game-info');
     const button = this.target.querySelector('.start__button');
-    button.addEventListener('click', () => {
-      if (this.props.onStart) {
-        this.props.onStart();
-        info.remove();
-      }
-    });
+    button.addEventListener('click', this.handleStartButtonClick);
   }
+
+  handleStartButtonClick = () => {
+    const info = this.target.querySelector('.game-info');
+    if (this.props.onStart) {
+      this.props.onStart();
+      info.remove();
+    }
+  };
 }

@@ -1,4 +1,4 @@
-export default class Dashboard {
+export default class GameDashboard {
   constructor(target, props) {
     this.target = target;
     this.props = props;
