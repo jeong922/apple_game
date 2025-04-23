@@ -1,3 +1,5 @@
+import { formatTime } from './utils/formatTime.js';
+
 export default class GameDashboard {
   constructor(target, props) {
     this.target = target;
@@ -28,12 +30,7 @@ export default class GameDashboard {
   setEvent() {
     const score = this.target.querySelector('.score');
     const timer = this.target.querySelector('.timer');
-    const scoreText = document.createElement('span');
     score.textContent = this.props.score;
-    score.append(scoreText);
-    timer.textContent = `${(Math.floor(this.props.time / 60) + '').padStart(2, 0)}:${(
-      (this.props.time % 60) +
-      ''
-    ).padStart(2, 0)}`;
+    timer.textContent = formatTime(this.props.time);
   }
 }

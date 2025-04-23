@@ -51,11 +51,8 @@ export default class GameBoard {
   `;
   }
 
-  mounted() {}
-
   render() {
     this.target.innerHTML = this.template();
-    this.mounted();
   }
 
   setEvent() {
@@ -155,7 +152,7 @@ export default class GameBoard {
       }
     }
 
-    document.querySelectorAll('.cell').forEach((cell) => {
+    this.target.querySelectorAll('.cell').forEach((cell) => {
       const row = cell.dataset.row;
       const col = cell.dataset.col;
       if (this.state.selected.has(`${row}-${col}`)) {
