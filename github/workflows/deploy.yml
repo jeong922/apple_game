@@ -1,9 +1,9 @@
-name: Deploy to GitHub Pages
+name: apple_game
 
 on:
   push:
     branches:
-      - main # main 브랜치에 push 될 때 동작
+      - main
 
 jobs:
   build-and-deploy:
@@ -13,11 +13,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js (선택사항 - 빌드가 필요하면)
+      - name: Setup Node.js (optional)
         uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # 빌드 필요하면 여기에 npm install, npm run build 등 추가
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: ./ # 정적파일이 저장소 루트에 있으면 그대로 둠
+          commit_message: 'Deploy to GitHub Pages via GitHub Actions'
