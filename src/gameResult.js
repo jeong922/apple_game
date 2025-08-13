@@ -24,12 +24,11 @@ export default class GameResult {
   }
 
   setEvent() {
-    const button = this.target.querySelector('.restart');
-    const result = this.target.querySelector('.result');
-
-    button.addEventListener('click', () => {
-      this.props.onReset();
-      result.remove();
+    this.target.addEventListener('click', (e) => {
+      if (e.target.classList.contains('restart')) {
+        this.props.onReset?.();
+        this.target.remove();
+      }
     });
   }
 

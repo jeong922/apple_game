@@ -3,9 +3,11 @@ import Dashboard from './gameDashboard.js';
 import GameResult from './gameResult.js';
 import StartButton from './gameStart.js';
 import { hasSumPathToTen } from './utils/boardUtils.js';
+import { formatTime } from './utils/formatTime.js';
 
 export default class Game {
   static TIME = 120;
+
   constructor(target) {
     this.target = target;
     this.state = this.init();
@@ -129,7 +131,7 @@ export default class Game {
 
   renderTime = () => {
     const timer = document.querySelector('.timer');
-    timer.textContent = this.updateTimer(this.state.time);
+    timer.textContent = formatTime(this.state.time);
   };
 
   startTimer = () => {
@@ -144,12 +146,6 @@ export default class Game {
       }
     }, 1000);
   };
-
-  updateTimer(time) {
-    const min = (Math.floor(time / 60) + '').padStart(2, 0);
-    const sec = ((time % 60) + '').padStart(2, 0);
-    return `${min}:${sec}`;
-  }
 
   setState(newState) {
     this.state = { ...this.state, ...newState };
