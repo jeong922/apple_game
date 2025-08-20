@@ -1,0 +1,223 @@
+:root {
+  --font-size-md: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 25px;
+
+  /* 배경색 */
+  --bg-color: #f0f8ea; /* 연한 그린 */
+  --bg-alt-color: #faf3e0; /* 베이지 */
+  --bg-mint: #e3f6e0; /* 밝은 민트 */
+  --bg-cream: #fdf7e3; /* 크림 */
+  --bg-white: #ffffff;
+
+  /* 사과 색상 */
+  --apple-green: #b5e48c; /* 연한 라임 */
+  --apple-olive: #a7c957; /* 연한 올리브 */
+  --apple-red: #ff6b6b; /* 부드러운 레드 */
+  --apple-coral: #ff8c8c; /* 코랄 레드 */
+  --apple-peach: #ffc49b; /* 살구색 */
+  --apple-orange: #ffa94d; /* 오렌지 */
+
+  /* UI 및 숫자 색상 */
+  --text-color: #3a506b; /* 차분한 네이비 */
+  --text-blue: #2c3e50; /* 짙은 블루 */
+  --button-color: #a67b5b; /* 부드러운 브라운 */
+  --button-brown: #8d6e63; /* 딥 브라운 */
+  --ui-green: #49796b; /* 어두운 녹색 */
+  --border-color: rgb(214, 214, 214);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Jua', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.game {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  max-width: 1000px;
+  height: 650px;
+  margin: 30px auto;
+  background-color: var(--bg-color);
+  border-radius: 10px;
+}
+
+.title {
+  text-align: center;
+}
+
+button {
+  padding: 10px 20px;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--button-brown);
+}
+
+.game-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 20px;
+  margin-top: 30px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background-color: var(--bg-alt-color);
+}
+
+.start__button {
+  background-color: var(--ui-green);
+  border: none;
+  margin-top: 10px;
+  border-radius: 10px;
+  font-size: var(--font-size-md);
+  color: white;
+}
+
+.dashboard {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.timer-wrapper,
+.score-wrapper {
+  width: 120px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  border: 1px solid var(--apple-olive);
+  background-color: var(--bg-white);
+  font-size: var(--font-size-lg);
+  color: var(--text-blue);
+}
+
+.timer,
+.score {
+  color: var(--text-color);
+}
+
+.board {
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  padding: 10px;
+  background-color: var(--bg-cream);
+  border-radius: 5px;
+}
+
+.reset {
+  margin-top: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: var(--ui-green);
+  margin-top: 20px;
+  color: white;
+  cursor: pointer;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cell svg {
+  width: 32px;
+  height: 32px;
+  position: absolute;
+}
+
+.cell span {
+  position: absolute;
+  top: 14px;
+  color: white;
+  font-size: var(--font-size-md);
+}
+
+.cell.disappear {
+  animation: pop 0.4s ease-in-out forwards;
+}
+
+.cell.selected {
+  background-color: var(--apple-peach);
+}
+
+.result-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: var(--font-size-xl);
+  z-index: 10;
+  visibility: hidden;
+}
+
+.result-container.visible {
+  visibility: visible;
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--apple-green);
+  background-color: var(--bg-white);
+  border-radius: 10px;
+  padding: 25px;
+  font-size: var(--font-size-lg);
+  color: var(--text-blue);
+}
+
+.restart {
+  margin-top: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: var(--ui-green);
+  color: white;
+  cursor: pointer;
+}
+
+.score-container {
+  margin-bottom: 20px;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
