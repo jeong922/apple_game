@@ -53,8 +53,15 @@ describe('Game 클래스', () => {
 
   test('타이머가 감소하다가 0이 되면 gameOver가 호출된다.', () => {
     game.onStart();
-    jest.advanceTimersByTime(Game.TIME * 1000);
-    jest.runAllTimers();
+
+    // runOnlyPendingTimers: 지금 시점에 대기 중인 타이머만 실행
+    jest.advanceTimersByTime((Game.TIME - 1) * 1000);
+    expect(game.state.time).toBe(1);
+
+    jest.advanceTimersByTime(1000);
+
+    jest.runOnlyPendingTimers();
+
     expect(game.state.time).toBe(0);
     expect(target.querySelector('.result-container').classList.contains('visible')).toBe(true);
   });
