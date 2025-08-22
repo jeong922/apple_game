@@ -134,17 +134,32 @@ export default class Game {
     timer.textContent = formatTime(this.state.time);
   };
 
+  // startTimer = () => {
+  //   clearInterval(this.state.interval);
+  //   this.state.interval = setInterval(() => {
+  //     if (this.state.time > 0) {
+  //       this.state.time -= 1;
+  //       this.renderTime();
+  //     } else {
+  //       clearInterval(this.state.interval);
+  //       this.gameOver();
+  //     }
+  //   }, 1000);
+  // };
+
   startTimer = () => {
     clearInterval(this.state.interval);
-    this.state.interval = setInterval(() => {
-      if (this.state.time > 0) {
-        this.state.time -= 1;
-        this.renderTime();
-      } else {
-        clearInterval(this.state.interval);
-        this.gameOver();
-      }
-    }, 1000);
+    this.state.interval = setInterval(this.tick, 1000);
+  };
+
+  tick = () => {
+    if (this.state.time > 0) {
+      this.state.time -= 1;
+      this.renderTime();
+    } else {
+      clearInterval(this.state.interval);
+      this.gameOver();
+    }
   };
 
   setState(newState) {
